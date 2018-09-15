@@ -5,7 +5,7 @@ const exphbs = require("express-handlebars");
 var flash = require("express-flash");
 var cookieParser = require("cookie-parser");
 var session = require("express-session");
-const WaiterAvailability = require("./waiter-availability");
+const Patients = require("./patients");
 const pg = require("pg");
 const Pool = pg.Pool;
 
@@ -20,27 +20,20 @@ if (process.env.DATABASE_URL) {
 
 const connectionString =
   process.env.DATABASE_URL ||
-  "postgresql://aviwe:aviwe@localhost:5432/waiter-availability";
+  "postgresql://postgres:lavish@localhost:5432/patients";
 
 const pool = new Pool({
   connectionString,
   ssl: useSSL
 });
 
-const waiterAvailability = WaiterAvailability(pool);
+const patients = Patients(pool);
 
 app.engine(
   "handlebars",
   exphbs({
     defaultLayout: "main",
     helpers: {
-      style: function() {
-        if (this.shifts.length === 3) {
-          return "green";
-        } else if (this.shifts.length > 3) {
-          return "blue";
-        }
-      },
       flashStyle: function() {
         if (
           this.messages.info == "Shift(s) successfully added!" ||
@@ -77,17 +70,17 @@ app.get("/", (req, res) => {
 
 app.post("/login", async function(req, res, next) {
   try {
-    let userName = req.body.userName;
-    const userType = await waiterAvailability.getUserType(userName);
+    // let userName = req.body.userName;
+    //const userType = await patients.getUserType(userName);
 
-    if (userType === "admin") {
-      res.redirect("/days");
-    } else if (userType === "waiter") {
-      res.redirect("/waiters/" + userName);
-    } else {
-      req.flash("error", "User does not exist");
-      res.redirect("/");
-    }
+    // if (userType === "admin") {
+    //   res.redirect("/days");
+    // } else if (userType === "waiter") {
+    //   res.redirect("/waiters/" + userName);
+    // } else {
+    //   req.flash("error", "User does not exist");
+    //   res.redirect("/");
+    // }
   } catch (error) {
     next(error);
   }
@@ -95,71 +88,71 @@ app.post("/login", async function(req, res, next) {
 
 app.get("/days", async function(req, res, next) {
   try {
-    const sortedShifts = await waiterAvailability.getShifts();
+  //  const sortedShifts = await patients.getShifts();
 
-    res.render("days", { sortedShifts });
+    res.render("days", {  });
   } catch (error) {
     next(error);
   }
 });
 
-app.get("/waiters/:username", async function(req, res, next) {
-  try {
-    const username = req.params.username;
-    const weekdays = await waiterAvailability.getWeekdays(username);
+// app.get("/waiters/:username", async function(req, res, next) {
+//   try {
+//     const username = req.params.username;
+//     const weekdays = await patients.getWeekdays(username);
+//
+//     res.render("waiters", { weekdays, username });
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
-    res.render("waiters", { weekdays, username });
-  } catch (error) {
-    next(error);
-  }
-});
-
-app.post("/waiters/:username", async function(req, res, next) {
-  try {
-    let dayName = req.body.day_name;
-    if (dayName) {
-      let added = await waiterAvailability.addShift(
-        req.params.username,
-        dayName
-      );
-
-      if (added) {
-        req.flash("info", "Shift(s) successfully added!");
-      }
-    }
-    res.redirect("/waiters/" + req.params.username);
-  } catch (error) {
-    next(error);
-  }
-});
-
-app.post("/delete", async function(req, res, next) {
-  try {
-    await waiterAvailability.deleteShifts();
-    const sortedShifts = await waiterAvailability.getShifts();
-
-    res.render("days", { sortedShifts });
-  } catch (error) {
-    next(error);
-  }
-});
+// app.post("/waiters/:username", async function(req, res, next) {
+//   try {
+//     let dayName = req.body.day_name;
+//     if (dayName) {
+//       let added = await patients.addShift(
+//         req.params.username,
+//         dayName
+//       );
+//
+//       if (added) {
+//         req.flash("info", "Shift(s) successfully added!");
+//       }
+//     }
+//     res.redirect("/waiters/" + req.params.username);
+//   } catch (error) {
+//     next(error);
+//   }
+// });
+//
+// app.post("/delete", async function(req, res, next) {
+//   try {
+//     await patients.deleteShifts();
+//     const sortedShifts = await patients.getShifts();
+//
+//     res.render("days", { sortedShifts });
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
 app.post("/register", async function(req, res, next) {
   try {
-    let userName = req.body.username;
-    let fullName = req.body.fullname;
-
-    var userAdded = await waiterAvailability.addUser(
-      userName,
-      fullName,
-      "waiter"
-    );
-
-    if (userAdded) {
-      req.flash("info", "User successfully added!");
-    }
-
-    res.redirect("/");
+    // let userName = req.body.username;
+    // let fullName = req.body.fullname;
+    //
+    // var userAdded = await patients.addUser(
+    //   userName,
+    //   fullName,
+    //   "waiter"
+    // );
+    //
+    // if (userAdded) {
+    //   req.flash("info", "User successfully added!");
+    // }
+    //
+    // res.redirect("/");
   } catch (error) {}
 });
 
