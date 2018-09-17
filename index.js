@@ -145,20 +145,20 @@ app.post("/filter", function(req, res) {
 
 app.post("/register", async function(req, res, next) {
   try {
-    // let userName = req.body.username;
-    // let fullName = req.body.fullname;
-    //
-    // var userAdded = await patients.addUser(
-    //   userName,
-    //   fullName,
-    //   "waiter"
-    // );
-    //
+    let userName = req.body.username;
+    let fullName = req.body.fullname;
+    let userType = req.bodt.usertype;
+    let password = req.body.password;
+    let password2 = req.body.password2;
+    console.log(userType);
+
+    // var userAdded = await patients.addUser(userName, fullName, "waiter");
+
     // if (userAdded) {
     //   req.flash("info", "User successfully added!");
     // }
-    //
-    // res.redirect("/");
+
+    res.redirect("/");
   } catch (error) {}
 });
 

@@ -1,7 +1,6 @@
-<h2 style="text-align: center">Waiter Availability</h2>
-<div class="ui two column middle aligned very relaxed stackable grid">
-
-    <div class="column center">
+<h2 style="text-align: center">Medify</h2>
+<div style="margin: 5% 20%">
+    <div class="ui center aligned basic segment">
         <div class="ui form">
             <form action="/login" method="Post">
                 <div class="field">
@@ -11,39 +10,61 @@
                         <i class="user icon"></i>
                     </div>
                 </div>
+                <div class="field">
+                    <label>Passord</label>
+                    <div class="ui left icon input">
+                        <input type="password" name="password" placeholder="Password">
+                        <i class="key icon"></i>
+                    </div>
+                </div>
 
                 <button type="submit" class="fluid ui blue submit button">Login</button>
             </form>
         </div>
-        {{#if messages.error}}
-        <div class="{{flashStyle}} margin">
-            <h5>{{messages.error}}</h5>
+        <div class="ui horizontal divider">
+            Or
         </div>
-        {{/if}}
+        <div class="ui placeholder segment">
+            <div class="signup__container">
 
-        <div class="ui form margin">
-            <h2 style="">Register</h2>
-            <form action="/register" method="POST">
-                <div class="two fields">
-                    <div class="field">
-                        <label>User Name</label>
-                        <input name="username" placeholder="User Name" type="text">
-                    </div>
-                    <div class="field">
-                        <label>Full Name</label>
-                        <input name="fullname" placeholder="Full Name" type="text">
-                    </div>
+                <div class="container__child signup__form">
+                    <form action="/register" method="POST">
+                        <div class="ui form">
+                            <div class="two fields">
+                                <div class="field">
+                                    <label>Full Name</label>
+                                    <input placeholder="Full Name" name="fullname" type="text">
+                                </div>
+                                <div class="field">
+                                    <label>User Name</label>
+                                    <input placeholder="User Name" name="username" type="text">
+                                </div>
+                            </div>
+                            <div class="input-group mb-3">
+                                <select class="custom-select" name="usertype" id="inputGroupSelect02">
+                                    <option disabled>User Type</option>
+                                    <option value="admin">Admin</option>
+                                    <option value="doctor">Doctor</option>
+                                    <option value="forensic scientist">Forensic Scientist</option>
+                                </select>
+
+                            </div>
+                            <div class="two fields">
+                                <div class="field">
+                                    <label>Password</label>
+                                    <input placeholder="Password" name="password" type="password">
+                                </div>
+                                <div class="field">
+                                    <label>Confirm Passord</label>
+                                    <input placeholder="Confirm Password" name="password2" type="password">
+                                </div>
+                            </div>
+                            <button type="submit" class="fluid ui orange submit button">Register</button>
+
+                        </div>
+                    </form>
                 </div>
-
-                <button type="submit" class="fluid ui blue submit button">Register</button>
-            </form>
+            </div>
         </div>
-        {{#if messages.info}}
-        <div class="{{flashStyle}} margin">
-            <h5>{{messages.info}}</h5>
-        </div>
-        {{/if}}
-
     </div>
-
 </div>

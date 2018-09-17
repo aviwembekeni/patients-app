@@ -8,6 +8,15 @@ drop table if exists patients, appointments, medications;
 -- 	user_type text not null
 -- );
 
+create table users
+(
+	id serial not null PRIMARY KEY,
+	fullname text not null,
+	username text not null UNIQUE,
+	usertype text not null,
+	hash VARCHAR(100) NOT NULL
+)
+
 create table patients
 (
 	id serial not null primary key,
