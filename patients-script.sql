@@ -32,7 +32,7 @@ create table patients
 create table appointments
 (
 	id serial not null primary key,
-	decription varchar not null,
+	description varchar not null,
 	appointment_date date not null,
 	patient_id int not null,
 	FOREIGN KEY (patient_id) REFERENCES patients(id)
@@ -41,7 +41,7 @@ create table appointments
 CREATE TABLE medications
 (
 	id serial not null primary key,
-	decription VARCHAR not null,
+	description VARCHAR not null,
 	meds VARCHAR not null,
 	patient_id int not null,
 	date_issued date not null,
