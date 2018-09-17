@@ -1,7 +1,9 @@
 const LocalStorage = require("node-localstorage").LocalStorage;
 localStorage = new LocalStorage("./scratch");
+var bcrypt = require('bcrypt-nodejs');
 
-module.exports = function(pool) {
+
+module.exports = function (pool) {
   async function getPatientsInfo(user_name) {
     const patientsList = await pool.query("SELECT * FROM patients");
     const patients = patientsList.rows;
@@ -11,8 +13,8 @@ module.exports = function(pool) {
       patients[i].random =
         "x" +
         Math.random()
-          .toString(36)
-          .substring(7);
+        .toString(36)
+        .substring(7);
 
       patients[i].medications = [];
       for (let j = 0; j < medications.length; j++) {
@@ -68,40 +70,35 @@ module.exports = function(pool) {
     return filteredPatients;
   }
 
-  // async function addShift(username, day) {
-  //   const userIds = await pool.query(
-  //     "SELECT id from users WHERE user_name= $1",
-  //     [username]
-  //   );
-  //
-  //   if (typeof day == "string") {
-  //     day = day.split(" ");
-  //   }
-  //
-  //   let weekday_ids = [];
-  //
-  //   for (let i = 0; i < day.length; i++) {
-  //     const dayIds = await pool.query(
-  //       "SELECT id from weekdays WHERE day_name= $1",
-  //       [day[i]]
-  //     );
-  //
-  //     let id = dayIds.rows[0].id;
-  //
-  //     weekday_ids.push(id);
-  //   }
-  //
-  //   const userId = userIds.rows[0].id;
-  //
-  //   await pool.query("DELETE from shifts WHERE waiter_id = $1", [userId]);
-  //   for (let i = 0; i < weekday_ids.length; i++) {
-  //     await pool.query(
-  //       "INSERT INTO shifts (waiter_id, weekday_id) VALUES ( $1, $2)",
-  //       [userId, weekday_ids[i]]
-  //     );
-  //   }
-  //   return true;
-  // }
+  async function addUser(register) {
+
+    const {
+      userName,
+      fullName,
+      userType,
+      password2,
+      password
+    } = register;
+
+    if (userName !== undefined || fullName !==
+      undefined, userType !== undefined, password2 !== undefined || password !== undefined) {
+
+      if (password !== password2) {
+        return "password does not match";
+      }
+      let hash = bcrypt.hashSync(password);
+      if (!hash) {
+        return 'opps something is wrong!!';
+      }
+      
+      await pool.query('INSERT INTO users (fullname,username,usertype,hash) VALUES($1,$2,$3,$4)',
+        [fullName, userName, userType, hash])
+      return "user is successfully added"
+
+    } else {
+      return "fill in the data";
+    }
+  }
 
   // async function getShifts() {
   //   const shifts = await pool.query(
@@ -202,6 +199,7 @@ module.exports = function(pool) {
     getPatientsInfo,
     getMedications,
     getAppointments,
-    patientSearch
+    patientSearch,
+    addUser
   };
 };
