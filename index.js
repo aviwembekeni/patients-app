@@ -72,7 +72,6 @@ app.post("/login", async function(req, res, next) {
   try {
     // let userName = req.body.userName;
     //const userType = await patients.getUserType(userName);
-
     // if (userType === "admin") {
     //   res.redirect("/days");
     // } else if (userType === "waiter") {
@@ -88,9 +87,10 @@ app.post("/login", async function(req, res, next) {
 
 app.get("/days", async function(req, res, next) {
   try {
-  //  const sortedShifts = await patients.getShifts();
-
-    res.render("days", {  });
+    //  const sortedShifts = await patients.getShifts();
+    const patient = await patients.getPatientsInfo();
+    console.log(patient);
+    res.render("days", {});
   } catch (error) {
     next(error);
   }

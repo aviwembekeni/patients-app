@@ -2,6 +2,24 @@ module.exports = function(pool) {
   async function getPatientsInfo(user_name) {
     const patientsList = await pool.query("SELECT * FROM patients");
     const patients = patientsList.rows;
+    const medications = await getMedications();
+    const appointments = await getAppointments();
+    for (let i = 0; i < patients.length; i++) {
+      patients[i].medications = [];
+      for (let j = 0; j < medications.length; j++) {
+        if (patients[i].id == medications[j].patient_id) {
+          patients[i].medications.push(medications[j]);
+        }
+      }
+
+      patients[i].appointments = [];
+
+      for (let k = 0; k < appointments.length; k++) {
+        if (patients[i].id == appointments[k].patient_id) {
+          patients[i].appointments.push(appointments[k]);
+        }
+      }
+    }
 
     return patients;
   }
@@ -17,15 +35,15 @@ module.exports = function(pool) {
   // }
 
   async function getAppointments() {
-    const users = await pool.query("SELECT * FROM appointments");
-
-    return users.rows;
+    const appointments = await pool.query("SELECT * FROM appointments");
+    // console.log(appointments.rows);
+    return appointments.rows;
   }
 
   async function getMedications() {
-    const users = await pool.query("SELECT * FROM medications");
-
-    return users.rows;
+    const medications = await pool.query("SELECT * FROM medications");
+    //console.log(medications);
+    return medications.rows;
   }
 
   // async function addShift(username, day) {
@@ -159,8 +177,8 @@ module.exports = function(pool) {
   // }
 
   return {
-   getPatientsInfo,
-   getMedications,
-   getAppointments
+    getPatientsInfo,
+    getMedications,
+    getAppointments
   };
 };
