@@ -85,15 +85,21 @@ app.post("/login", async function(req, res, next) {
   }
 });
 
-app.get("/days", async function(req, res, next) {
+app.get("/patients", async function(req, res, next) {
   try {
-    //  const sortedShifts = await patients.getShifts();
     const patientsInfo = await patients.getPatientsInfo();
-    console.log(patientsInfo);
-    res.render("days", { patientsInfo });
+    res.render("patients", { patientsInfo });
   } catch (error) {
     next(error);
   }
+});
+
+app.post("/filter", function(req, res) {
+  //  const sortedShifts = await patients.getShifts();
+  const name = req.body.patientName;
+
+  const patientsInfo = patients.patientSearch(name);
+  res.render("patients", { patientsInfo });
 });
 
 // app.get("/waiters/:username", async function(req, res, next) {

@@ -1,3 +1,6 @@
+const LocalStorage = require("node-localstorage").LocalStorage;
+localStorage = new LocalStorage("./scratch");
+
 module.exports = function(pool) {
   async function getPatientsInfo(user_name) {
     const patientsList = await pool.query("SELECT * FROM patients");
@@ -27,6 +30,8 @@ module.exports = function(pool) {
       }
     }
 
+    localStorage.setItem("patients", JSON.stringify(patients));
+
     return patients;
   }
 
@@ -42,14 +47,25 @@ module.exports = function(pool) {
 
   async function getAppointments() {
     const appointments = await pool.query("SELECT * FROM appointments");
-    // console.log(appointments.rows);
+
     return appointments.rows;
   }
 
   async function getMedications() {
     const medications = await pool.query("SELECT * FROM medications");
-    //console.log(medications);
+
     return medications.rows;
+  }
+
+  function patientSearch(name) {
+    const retrievedPatients = localStorage.getItem("patients");
+    const patients = JSON.parse(retrievedPatients);
+
+    const filteredPatients = patients.filter(patient => {
+      return patient.fullname.split(" ")[0] == name || patient.fullname == name;
+    });
+
+    return filteredPatients;
   }
 
   // async function addShift(username, day) {
@@ -185,6 +201,7 @@ module.exports = function(pool) {
   return {
     getPatientsInfo,
     getMedications,
-    getAppointments
+    getAppointments,
+    patientSearch
   };
 };
