@@ -88,9 +88,9 @@ app.post("/login", async function(req, res, next) {
 app.get("/days", async function(req, res, next) {
   try {
     //  const sortedShifts = await patients.getShifts();
-    const patient = await patients.getPatientsInfo();
-    console.log(patient);
-    res.render("days", {});
+    const patientsInfo = await patients.getPatientsInfo();
+    console.log(patientsInfo);
+    res.render("days", { patientsInfo });
   } catch (error) {
     next(error);
   }

@@ -5,6 +5,12 @@ module.exports = function(pool) {
     const medications = await getMedications();
     const appointments = await getAppointments();
     for (let i = 0; i < patients.length; i++) {
+      patients[i].random =
+        "x" +
+        Math.random()
+          .toString(36)
+          .substring(7);
+
       patients[i].medications = [];
       for (let j = 0; j < medications.length; j++) {
         if (patients[i].id == medications[j].patient_id) {
