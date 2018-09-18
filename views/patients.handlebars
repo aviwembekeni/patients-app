@@ -1,10 +1,35 @@
 <div class="">
-    <nav class="navbar navbar-light bg-light">
-        <a class="navbar-brand" href="/patients">Medify</a>
-        <form action="/filter" class="form-inline" method="POST">
-            <input class="form-control mr-sm-2" name="patientName" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </form>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="/patients">SSTech</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-link">
+                    <a class="nav-link" href="#">{{user.fullname}} : {{user.usertype}}</a>
+                </li>
+                <li class="nav-link item">
+                    <a class="nav-item underline" href="/">Log Out</a>
+                </li>
+
+            </ul>
+            <form class="form-inline">
+                <button class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#addPatient" type="button">Add
+                    patient</button>
+                <button class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#addMedication" type="button">Add
+                    Medication</button>
+                <button class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#addAppointment" type="button">Add
+                    Appointment</button>
+            </form>
+
+            <form action="/filter" class="form-inline" method="POST">
+                <input class="form-control mr-sm-2" name="patientName" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </div>
     </nav>
 
     <div class="accordion ui piled  segments" id="accordionExample">
@@ -12,7 +37,7 @@
         <div class="ui center aligned segment">
             <div class="card-header" id="headingOne">
                 <h5 class="mb-0">
-                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#{{random}}""
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#{{random}}"
                         aria-expanded="
                         true" aria-controls={{random}}>
                         {{fullname}}
@@ -106,5 +131,133 @@
             </div>
         </div>
         {{/each}}
+    </div>
+    <div class="modal fade" id="addPatient" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add New Patient</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="/add-patient" method="POST">
+                    <div class="modal-body">
+
+                        <div class="row">
+                            <div class="form-group col">
+                                <label for="recipient-name" class="col-form-label">ID No :</label>
+                                <input type="text" name="idno" class="form-control" id="recipient-name">
+                            </div>
+                            <div class="form-group col">
+                                <label for="message-text" class="col-form-label">Full Name :</label>
+                                <input class="form-control" name="fullname" id="message-text">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">Home Address :</label>
+                            <input type="text" name="address" class="form-control" id="recipient-name">
+                        </div>
+                        <div class="row">
+                            <div class="form-group col">
+                                <label for="message-text" class="col-form-label">Illness :</label>
+                                <input class="form-control" name="illness" id="message-text">
+                            </div>
+                            <div class="form-group col">
+                                <label for="recipient-name" class="col-form-label">Doctor's Name :</label>
+                                <input type="text" name="doctorname" class="form-control" id="recipient-name">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col">
+                                <label for="message-text" class="col-form-label">Contact No :</label>
+                                <input class="form-control" name="contact" id="message-text">
+                            </div>
+                            <div class="form-group col">
+                                <label for="message-text" class="col-form-label">Doctor's No :</label>
+                                <input class="form-control" name="doctorno" id="message-text">
+                            </div>
+                        </div>
+                        <div class="input-group mb-3">
+
+                            <select class="custom-select" name="hospital" id="inputGroupSelect02">
+                                <option disabled>Hospital</option>
+                                <option value="GrooteShuur">Groote Schuur</option>
+                                <option value="Tygerburg">Tygerburg</option>
+                                <option value="Khayelitsha">Khayelitsha</option>
+                            </select>
+
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button class="btn btn-primary" type="Submit">Add Patient</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="addMedication" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add Patient Medication</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="/add-medication" method="POST">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">Description :</label>
+                            <input type="text" name="description" class="form-control" id="recipient-name">
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text" class="col-form-label">Meds :</label>
+                            <textarea class="form-control" name="meds" id="message-text"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text" class="col-form-label">Date Issued :</label>
+                            <input class="form-control" type="date" name="dateissued" id="message-text">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Add Medication</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="addAppointment" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add Patient Appointment</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="/add-appointment" method="POST">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">Description :</label>
+                            <input type="text" name="description" class="form-control" id="recipient-name">
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text" class="col-form-label">Appointment Date :</label>
+                            <input class="form-control" type="date" name="appointmentdate" id="message-text">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Add Medication</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 </div>

@@ -21,7 +21,7 @@ if (process.env.DATABASE_URL) {
 
 const connectionString =
   process.env.DATABASE_URL ||
-  "postgresql://coder:coder123@localhost:5432/patients";
+  "postgresql://postgres:lavish@localhost:5432/patients";
 
 const pool = new Pool({
   connectionString,
@@ -35,7 +35,7 @@ app.engine(
   exphbs({
     defaultLayout: "main",
     helpers: {
-      flashStyle: function () {
+      flashStyle: function() {
         if (
           this.messages.info == "Shift(s) successfully added!" ||
           this.messages.info == "User successfully added!"
@@ -62,104 +62,63 @@ app.use(
 app.use(flash());
 
 app.use(bodyParser.json()); // support json encoded bodies
-app.use(bodyParser.urlencoded({
-  extended: false
-})); // support encoded bodies
+app.use(
+  bodyParser.urlencoded({
+    extended: false
+  })
+); // support encoded bodies
 app.use(express.static("public"));
 
 app.get("/", (req, res) => {
   res.render("landing");
 });
 
-app.post("/login", async function (req, res, next) {
+app.post("/login", async function(req, res, next) {
   try {
-    const {
-      userName,
-      password
-    } = req.body;
+    const { userName, password } = req.body;
     let params = {
       userName,
       password
-    }
+    };
 
     let login = await patients.siginIn(params);
-    if (login !== 'login') {
-      console.log(login)
-      res.redirect('/');
+    if (login !== "login") {
+      console.log(login);
+      res.redirect("/");
     } else {
-
-      res.redirect('patients');
+      res.redirect("patients");
     }
-
   } catch (error) {
-
     next(error);
   }
 });
 
-app.get("/patients", async function (req, res, next) {
+app.get("/patients", async function(req, res, next) {
   try {
     const patientsInfo = await patients.getPatientsInfo();
+    const user = patients.getUser();
     res.render("patients", {
-      patientsInfo
+      patientsInfo,
+      user
     });
   } catch (error) {
     next(error);
   }
 });
 
-app.post("/filter", function (req, res) {
+app.post("/filter", function(req, res) {
   //  const sortedShifts = await patients.getShifts();
   const name = req.body.patientName;
 
   const patientsInfo = patients.patientSearch(name);
+  const user = patients.getUser();
   res.render("patients", {
-    patientsInfo
+    patientsInfo,
+    user
   });
 });
 
-// app.get("/waiters/:username", async function(req, res, next) {
-//   try {
-//     const username = req.params.username;
-//     const weekdays = await patients.getWeekdays(username);
-//
-//     res.render("waiters", { weekdays, username });
-//   } catch (error) {
-//     next(error);
-//   }
-// });
-
-// app.post("/waiters/:username", async function(req, res, next) {
-//   try {
-//     let dayName = req.body.day_name;
-//     if (dayName) {
-//       let added = await patients.addShift(
-//         req.params.username,
-//         dayName
-//       );
-//
-//       if (added) {
-//         req.flash("info", "Shift(s) successfully added!");
-//       }
-//     }
-//     res.redirect("/waiters/" + req.params.username);
-//   } catch (error) {
-//     next(error);
-//   }
-// });
-//
-// app.post("/delete", async function(req, res, next) {
-//   try {
-//     await patients.deleteShifts();
-//     const sortedShifts = await patients.getShifts();
-//
-//     res.render("days", { sortedShifts });
-//   } catch (error) {
-//     next(error);
-//   }
-// });
-
-app.post("/register", async function (req, res, next) {
+app.post("/register", async function(req, res, next) {
   try {
     let userName = req.body.username;
     let fullName = req.body.fullname;
@@ -173,10 +132,10 @@ app.post("/register", async function (req, res, next) {
       userType,
       password,
       password2
-    }
+    };
 
     let newUser = await patients.addUser(register);
-    console.log(newUser)
+    console.log(newUser);
 
     res.redirect("/");
   } catch (err) {
@@ -184,6 +143,6 @@ app.post("/register", async function (req, res, next) {
   }
 });
 
-app.listen(PORT, function () {
+app.listen(PORT, function() {
   console.log("App starting on port", PORT);
 });
