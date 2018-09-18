@@ -20,7 +20,7 @@ if (process.env.DATABASE_URL) {
 
 const connectionString =
   process.env.DATABASE_URL ||
-  "postgresql://postgres:lavish@localhost:5432/patients";
+  "postgresql://coder:coder123@localhost:5432/patients";
 
 const pool = new Pool({
   connectionString,
@@ -34,7 +34,7 @@ app.engine(
   exphbs({
     defaultLayout: "main",
     helpers: {
-      flashStyle: function() {
+      flashStyle: function () {
         if (
           this.messages.info == "Shift(s) successfully added!" ||
           this.messages.info == "User successfully added!"
@@ -61,14 +61,16 @@ app.use(
 app.use(flash());
 
 app.use(bodyParser.json()); // support json encoded bodies
-app.use(bodyParser.urlencoded({ extended: false })); // support encoded bodies
+app.use(bodyParser.urlencoded({
+  extended: false
+})); // support encoded bodies
 app.use(express.static("public"));
 
 app.get("/", (req, res) => {
   res.render("landing");
 });
 
-app.post("/login", async function(req, res, next) {
+app.post("/login", async function (req, res, next) {
   try {
     // let userName = req.body.userName;
     //const userType = await patients.getUserType(userName);
@@ -85,21 +87,25 @@ app.post("/login", async function(req, res, next) {
   }
 });
 
-app.get("/patients", async function(req, res, next) {
+app.get("/patients", async function (req, res, next) {
   try {
     const patientsInfo = await patients.getPatientsInfo();
-    res.render("patients", { patientsInfo });
+    res.render("patients", {
+      patientsInfo
+    });
   } catch (error) {
     next(error);
   }
 });
 
-app.post("/filter", function(req, res) {
+app.post("/filter", function (req, res) {
   //  const sortedShifts = await patients.getShifts();
   const name = req.body.patientName;
 
   const patientsInfo = patients.patientSearch(name);
-  res.render("patients", { patientsInfo });
+  res.render("patients", {
+    patientsInfo
+  });
 });
 
 // app.get("/waiters/:username", async function(req, res, next) {
@@ -143,25 +149,31 @@ app.post("/filter", function(req, res) {
 //   }
 // });
 
-app.post("/register", async function(req, res, next) {
+app.post("/register", async function (req, res, next) {
   try {
     let userName = req.body.username;
     let fullName = req.body.fullname;
-    let userType = req.bodt.usertype;
+    let userType = req.body.usertype;
     let password = req.body.password;
     let password2 = req.body.password2;
-    console.log(userType);
 
-    // var userAdded = await patients.addUser(userName, fullName, "waiter");
+    let register = {
+      userName,
+      fullName,
+      userType,
+      password,
+      password2
+    }
 
-    // if (userAdded) {
-    //   req.flash("info", "User successfully added!");
-    // }
+    let newUser = await patients.addUser(register);
+    console.log(newUser)
 
     res.redirect("/");
-  } catch (error) {}
+  } catch (err) {
+    next(err);
+  }
 });
 
-app.listen(PORT, function() {
+app.listen(PORT, function () {
   console.log("App starting on port", PORT);
 });
