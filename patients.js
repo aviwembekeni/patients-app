@@ -1,7 +1,8 @@
 const LocalStorage = require("node-localstorage").LocalStorage;
 localStorage = new LocalStorage("./scratch");
 var bcrypt = require('bcrypt-nodejs');
-
+const loginErrorMessages = require('./validation/login');
+const registerErrorMessages = require('./validation/register');
 
 module.exports = function (pool) {
   async function getPatientsInfo(user_name) {
@@ -80,24 +81,47 @@ module.exports = function (pool) {
       password
     } = register;
 
-    if (userName !== undefined || fullName !==
-      undefined, userType !== undefined, password2 !== undefined || password !== undefined) {
-
-      if (password !== password2) {
-        return "password does not match";
-      }
-      let hash = bcrypt.hashSync(password);
-      if (!hash) {
-        return 'opps something is wrong!!';
-      }
-      
-      await pool.query('INSERT INTO users (fullname,username,usertype,hash) VALUES($1,$2,$3,$4)',
-        [fullName, userName, userType, hash])
-      return "user is successfully added"
-
-    } else {
-      return "fill in the data";
+    let error = registerErrorMessages(register);
+    if (!error.isValid) {
+      console.log(error.errors)
+      return error.errors;
     }
+    let hash = bcrypt.hashSync(password);
+    if (!hash) {
+      return 'opps something is wrong!!';
+    }
+    await pool.query('INSERT INTO users (fullname,username,usertype,hash) VALUES($1,$2,$3,$4)',
+      [fullName, userName, userType, hash])
+    return "user is successfully added"
+
+  }
+
+
+  async function siginIn(params) {
+    let error = loginErrorMessages(params);
+    if (!error.isValid) {
+      return error.errors;
+    }
+    let siginIn = await validUser(params);
+    return siginIn;
+  }
+
+  async function validUser({
+    userName,
+    password
+  }) {
+
+    let found = await pool.query('SELECT hash FROM users where username=$1', [userName]);
+    if (found.rowCount == 0) {
+
+      return "username is not found";
+    }
+    let hash = found.rows[0].hash;
+    if (!bcrypt.compareSync(password, hash)) {
+
+      return "incorrect password"
+    }
+    return "login";
   }
 
   // async function getShifts() {
@@ -200,6 +224,7 @@ module.exports = function (pool) {
     getMedications,
     getAppointments,
     patientSearch,
-    addUser
+    addUser,
+    siginIn
   };
 };

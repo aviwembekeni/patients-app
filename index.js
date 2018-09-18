@@ -6,6 +6,7 @@ var flash = require("express-flash");
 var cookieParser = require("cookie-parser");
 var session = require("express-session");
 const Patients = require("./patients");
+
 const pg = require("pg");
 const Pool = pg.Pool;
 
@@ -72,17 +73,26 @@ app.get("/", (req, res) => {
 
 app.post("/login", async function (req, res, next) {
   try {
-    // let userName = req.body.userName;
-    //const userType = await patients.getUserType(userName);
-    // if (userType === "admin") {
-    //   res.redirect("/days");
-    // } else if (userType === "waiter") {
-    //   res.redirect("/waiters/" + userName);
-    // } else {
-    //   req.flash("error", "User does not exist");
-    //   res.redirect("/");
-    // }
+    const {
+      userName,
+      password
+    } = req.body;
+    let params = {
+      userName,
+      password
+    }
+
+    let login = await patients.siginIn(params);
+    if (login !== 'login') {
+      console.log(login)
+      res.redirect('/');
+    } else {
+
+      res.redirect('patients');
+    }
+
   } catch (error) {
+
     next(error);
   }
 });
