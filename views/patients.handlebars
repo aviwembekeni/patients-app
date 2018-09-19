@@ -34,6 +34,7 @@
 
     <div class="accordion ui piled  segments" id="accordionExample">
         {{#each patientsInfo}}
+        {{#if alive}}
         <div class="ui center aligned segment">
             <div class="card-header" id="headingOne">
                 <h5 class="mb-0">
@@ -79,6 +80,10 @@
                                     <tr>
                                         <td>Doctor's No.</td>
                                         <td>{{doctor_no}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Hospital Name</td>
+                                        <td>{{hospital_name}}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -130,6 +135,7 @@
                 </div>
             </div>
         </div>
+        {{/if}}
         {{/each}}
     </div>
     <div class="modal fade" id="addPatient" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

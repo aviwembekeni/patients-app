@@ -86,7 +86,12 @@ app.post("/login", async function(req, res, next) {
       console.log(login);
       res.redirect("/");
     } else {
-      res.redirect("patients");
+      const user = patients.getUser();
+      if (user.usertype == "admin" || user.usertype == "doctor") {
+        res.redirect("/patients");
+      } else {
+        res.redirect("/deceased");
+      }
     }
   } catch (error) {
     next(error);
@@ -106,16 +111,36 @@ app.get("/patients", async function(req, res, next) {
   }
 });
 
+app.get("/deceased", async function(req, res, next) {
+  try {
+    const deceasedInfo = await patients.getDeceasedInfo();
+    const user = patients.getUser();
+    res.render("deceased", {
+      deceasedInfo,
+      user
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 app.post("/filter", function(req, res) {
   //  const sortedShifts = await patients.getShifts();
   const name = req.body.patientName;
 
-  const patientsInfo = patients.patientSearch(name);
+  const info = patients.patientSearch(name);
   const user = patients.getUser();
-  res.render("patients", {
-    patientsInfo,
-    user
-  });
+  if (user.usertype === "forensic scientist") {
+    res.render("deceased", {
+      deceasedInfo: info,
+      user
+    });
+  } else {
+    res.render("patients", {
+      patientsInfo: info,
+      user
+    });
+  }
 });
 
 app.post("/register", async function(req, res, next) {

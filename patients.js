@@ -6,7 +6,9 @@ const registerErrorMessages = require("./validation/register");
 
 module.exports = function(pool) {
   async function getPatientsInfo(user_name) {
-    const patientsList = await pool.query("SELECT * FROM patients");
+    const patientsList = await pool.query(
+      "SELECT *, name as hospital_name FROM patients JOIN hospitals ON patients.hospital = hospitals.hospital_id"
+    );
     const patients = patientsList.rows;
     const medications = await getMedications();
     const appointments = await getAppointments();
@@ -58,6 +60,31 @@ module.exports = function(pool) {
     const medications = await pool.query("SELECT * FROM medications");
 
     return medications.rows;
+  }
+
+  async function getHospitals() {
+    const hospitals = await pool.query("SELECT * FROM hospitals");
+
+    return hospitals.rows;
+  }
+
+  async function getDeceasedInfo() {
+    const deceasedList = await pool.query(
+      "SELECT *, report FROM patients JOIN deceased on patients.id = deceased.deceased_id"
+    );
+
+    const deceased = deceasedList.rows;
+
+    for (let i = 0; i < deceased.length; i++) {
+      deceased[i].random =
+        "x" +
+        Math.random()
+          .toString(36)
+          .substring(7);
+    }
+
+    localStorage.setItem("patients", JSON.stringify(deceased));
+    return deceased;
   }
 
   function patientSearch(name) {
@@ -131,6 +158,8 @@ module.exports = function(pool) {
     patientSearch,
     addUser,
     siginIn,
-    getUser
+    getUser,
+    getHospitals,
+    getDeceasedInfo
   };
 };
