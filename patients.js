@@ -68,6 +68,85 @@ module.exports = function(pool) {
     return hospitals.rows;
   }
 
+  async function addPatient(patient) {
+    let hospitalIds = await pool.query(
+      "Select hospital_id from hospitals WHERE name = $1",
+      [patient.hospital]
+    );
+
+    let hospital_id = hospitalIds.rows[0].hospital_id;
+    try {
+      await pool.query(
+        "INSERT INTO patients (id_no, fullname, address, illness, doctor_name, contact_no, doctor_no, hospital) VALUES($1, $2, $3, $4, $5, $6, $7, $8)",
+        [
+          patient.idno,
+          patient.fullname,
+          patient.address,
+          patient.illness,
+          patient.doctorname,
+          patient.contact,
+          patient.doctorno,
+          hospital_id
+        ]
+      );
+
+      localStorage.setItem("idno", patient.idno);
+
+      return "success";
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  }
+
+  async function addMedication(medication) {
+    let idno = localStorage.getItem("idno");
+
+    let pattientIdList = await pool.query(
+      "select id from patients WHERE id_no = $1",
+      [idno]
+    );
+
+    let patientId = pattientIdList.rows[0].id;
+    try {
+      await pool.query(
+        "INSERT INTO medications (description, meds, patient_id, date_issued) VALUES($1, $2, $3, $4)",
+        [
+          medication.description,
+          medication.meds,
+          patientId,
+          medication.dateissued
+        ]
+      );
+
+      return "success";
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  }
+
+  async function addAppointment(appointment) {
+    let idno = localStorage.getItem("idno");
+
+    let pattientIdList = await pool.query(
+      "select id from patients WHERE id_no = $1",
+      [idno]
+    );
+
+    let patientId = pattientIdList.rows[0].id;
+    try {
+      await pool.query(
+        "INSERT INTO appointments (description, appointment_date, patient_id) VALUES($1, $2, $3)",
+        [appointment.description, appointment.appointmentdate, patientId]
+      );
+
+      return "success";
+    } catch (error) {
+      return error;
+    }
+  }
+
   async function getDeceasedInfo() {
     const deceasedList = await pool.query(
       "SELECT *, report FROM patients JOIN deceased on patients.id = deceased.deceased_id"
@@ -160,6 +239,9 @@ module.exports = function(pool) {
     siginIn,
     getUser,
     getHospitals,
-    getDeceasedInfo
+    getDeceasedInfo,
+    addPatient,
+    addMedication,
+    addAppointment
   };
 };

@@ -102,9 +102,11 @@ app.get("/patients", async function(req, res, next) {
   try {
     const patientsInfo = await patients.getPatientsInfo();
     const user = patients.getUser();
+    const hospitals = await patients.getHospitals();
     res.render("patients", {
       patientsInfo,
-      user
+      user,
+      hospitals
     });
   } catch (error) {
     next(error);
@@ -124,22 +126,26 @@ app.get("/deceased", async function(req, res, next) {
   }
 });
 
-app.post("/filter", function(req, res) {
-  //  const sortedShifts = await patients.getShifts();
-  const name = req.body.patientName;
-
-  const info = patients.patientSearch(name);
-  const user = patients.getUser();
-  if (user.usertype === "forensic scientist") {
-    res.render("deceased", {
-      deceasedInfo: info,
-      user
-    });
-  } else {
-    res.render("patients", {
-      patientsInfo: info,
-      user
-    });
+app.post("/filter", async function(req, res, next) {
+  try {
+    const name = req.body.patientName;
+    const info = patients.patientSearch(name);
+    const user = patients.getUser();
+    if (user.usertype === "forensic scientist") {
+      res.render("deceased", {
+        deceasedInfo: info,
+        user
+      });
+    } else {
+      const hospitals = await patients.getHospitals();
+      res.render("patients", {
+        patientsInfo: info,
+        user,
+        hospitals
+      });
+    }
+  } catch (error) {
+    next(error);
   }
 });
 
@@ -163,6 +169,77 @@ app.post("/register", async function(req, res, next) {
     console.log(newUser);
 
     res.redirect("/");
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.post("/add-patient", async function(req, res, next) {
+  try {
+    let idno = req.body.idno;
+    let fullname = req.body.fullname;
+    let address = req.body.address;
+    let illness = req.body.illness;
+    let doctorname = req.body.doctorname;
+    let contact = req.body.contact;
+    let doctorno = req.body.doctorno;
+    let hospital = req.body.hospital;
+
+    let patient = {
+      idno,
+      fullname,
+      address,
+      illness,
+      doctorname,
+      contact,
+      doctorno,
+      hospital
+    };
+
+    let newPatient = await patients.addPatient(patient);
+    console.log(patient);
+
+    res.redirect("/patients");
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.post("/add-medication", async function(req, res, next) {
+  try {
+    let description = req.body.description;
+    let meds = req.body.meds;
+    let dateissued = req.body.dateissued;
+
+    let medication = {
+      description,
+      meds,
+      dateissued
+    };
+
+    let newMedication = await patients.addMedication(medication);
+    console.log(medication);
+
+    res.redirect("/patients");
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.post("/add-appointment", async function(req, res, next) {
+  try {
+    let description = req.body.description;
+    let appointmentdate = req.body.appointmentdate;
+
+    let appointment = {
+      description,
+      appointmentdate
+    };
+
+    let newAppointment = await patients.addAppointment(appointment);
+    console.log(appointment);
+
+    res.redirect("/patients");
   } catch (err) {
     next(err);
   }

@@ -187,10 +187,10 @@
                         <div class="input-group mb-3">
 
                             <select class="custom-select" name="hospital" id="inputGroupSelect02">
-                                <option disabled>Hospital</option>
-                                <option value="GrooteShuur">Groote Schuur</option>
-                                <option value="Tygerburg">Tygerburg</option>
-                                <option value="Khayelitsha">Khayelitsha</option>
+                                <option disbled>Select Hospital</option>
+                                {{#each hospitals}}
+                                <option value="{{name}}">{{name}}</option>
+                                {{/each}}
                             </select>
 
                         </div>
