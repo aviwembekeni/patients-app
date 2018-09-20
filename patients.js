@@ -7,17 +7,20 @@ const registerErrorMessages = require("./validation/register");
 module.exports = function(pool) {
   async function getPatientsInfo(user_name) {
     const patientsList = await pool.query(
-      "SELECT *, name as hospital_name FROM patients JOIN hospitals ON patients.hospital = hospitals.hospital_id"
+      "SELECT *, name as hospital_name FROM patients JOIN hospitals ON patients.hospital = hospitals.hospital_id ORDER BY fullname ASC"
     );
     const patients = patientsList.rows;
     const medications = await getMedications();
     const appointments = await getAppointments();
+    const hospitals = await getHospitals();
     for (let i = 0; i < patients.length; i++) {
       patients[i].random =
         "x" +
         Math.random()
           .toString(36)
           .substring(7);
+
+      patients[i].hospitals = hospitals;
 
       patients[i].medications = [];
       for (let j = 0; j < medications.length; j++) {
@@ -147,9 +150,54 @@ module.exports = function(pool) {
     }
   }
 
+  async function transferPatient(transferData) {
+    try {
+      await pool.query("UPDATE patients SET hospital = $1 WHERE id = $2", [
+        transferData.hospitalid,
+        transferData.patientid
+      ]);
+
+      return "success";
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  }
+
+  async function markPatientAsDeceased(patientid) {
+    try {
+      await pool.query("UPDATE patients SET alive = false WHERE id = $1", [
+        patientid
+      ]);
+
+      await pool.query("INSERT INTO deceased (deceased_id) VALUES ($1)", [
+        patientid
+      ]);
+
+      return "success";
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  }
+
+  async function addDeceasedReport(deceasedid, report) {
+    try {
+      await pool.query(
+        "UPDATE deceased SET report = $1 WHERE deceased_id = $2",
+        [report, deceasedid]
+      );
+
+      return "success";
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  }
+
   async function getDeceasedInfo() {
     const deceasedList = await pool.query(
-      "SELECT *, report FROM patients JOIN deceased on patients.id = deceased.deceased_id"
+      "SELECT *, deceased_id, report FROM patients JOIN deceased on patients.id = deceased.deceased_id ORDER BY fullname ASC"
     );
 
     const deceased = deceasedList.rows;
@@ -171,7 +219,11 @@ module.exports = function(pool) {
     const patients = JSON.parse(retrievedPatients);
 
     const filteredPatients = patients.filter(patient => {
-      return patient.fullname.split(" ")[0] == name || patient.fullname == name;
+      return (
+        patient.fullname.split(" ")[0] == name ||
+        patient.fullname == name ||
+        patient.fullname.split(" ")[1] == name
+      );
     });
 
     return filteredPatients;
@@ -242,6 +294,9 @@ module.exports = function(pool) {
     getDeceasedInfo,
     addPatient,
     addMedication,
-    addAppointment
+    addAppointment,
+    transferPatient,
+    markPatientAsDeceased,
+    addDeceasedReport
   };
 };

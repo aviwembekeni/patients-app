@@ -89,6 +89,19 @@
                 </tbody>
               </table>
 
+
+              <form action="/add-deceased-report/{{deceased_id}}" method="POST">
+                <p class="input-group mt-3 center">Edit Report</p>
+                <div class="input-group mt-3 row">
+                  <div class="form-group col">
+                    <textarea class="form-control" name="report" id="message-text"></textarea>
+                  </div>
+                  <div class="form-group col">
+                    <button class="btn btn-sm btn-outline-primary" type="submit">Submit Report</button>
+                  </div>
+                </div>
+              </form>
+
             </div>
           </div>
 

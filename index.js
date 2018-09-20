@@ -218,7 +218,6 @@ app.post("/add-medication", async function(req, res, next) {
     };
 
     let newMedication = await patients.addMedication(medication);
-    console.log(medication);
 
     res.redirect("/patients");
   } catch (err) {
@@ -237,9 +236,54 @@ app.post("/add-appointment", async function(req, res, next) {
     };
 
     let newAppointment = await patients.addAppointment(appointment);
-    console.log(appointment);
 
     res.redirect("/patients");
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.post("/transfer-patient/:patient_id", async function(req, res, next) {
+  try {
+    let hospitalid = req.body.hospital;
+    let patientid = req.params.patient_id;
+
+    let transferData = {
+      hospitalid,
+      patientid
+    };
+
+    let tranferResults = await patients.transferPatient(transferData);
+    console.log(tranferResults);
+
+    res.redirect("/patients");
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.post("/patient-deceased/:patient_id", async function(req, res, next) {
+  try {
+    let patientid = req.params.patient_id;
+
+    let markResults = await patients.markPatientAsDeceased(patientid);
+    console.log(markResults);
+
+    res.redirect("/patients");
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.post("/add-deceased-report/:deceased_id", async function(req, res, next) {
+  try {
+    let deceasedid = req.params.deceased_id;
+    let report = req.body.report;
+
+    let addReportResults = await patients.addDeceasedReport(deceasedid, report);
+    console.log(addReportResults);
+
+    res.redirect("/deceased");
   } catch (err) {
     next(err);
   }

@@ -85,10 +85,39 @@
                                         <td>Hospital Name</td>
                                         <td>{{hospital_name}}</td>
                                     </tr>
+
+
                                 </tbody>
                             </table>
+                            <p>Transfer Patient</p>
+                            <form action="/transfer-patient/{{id}}" method="POST">
+                                <div class="input-group mb-3">
+
+                                    <select class="custom-select" name="hospital" id="hospitalSelect02">
+                                        <option disbled>Select Hospital</option>
+                                        {{#each hospitals}}
+                                        <option value="{{hospital_id}}">{{name}}</option>
+                                        {{/each}}
+                                    </select>
+
+                                </div>
+                                <button class="btn btn-sm btn-outline-primary" type="submit">Transer
+                                    Patient</button>
+                            </form>
+                            <form action="/patient-deceased/{{id}}" method="POST">
+                                <p class="input-group mt-3 center">Mark As Deceased</p>
+                                <div class="input-group mt-3">
+
+                                    <button class="btn btn-sm btn-outline-secondary" type="submit">Mark As Deceased
+                                    </button>
+                                </div>
+                            </form>
+
                         </div>
+
+
                     </div>
+
                     <div class="col">
                         <div class="card card-body ">
                             <a class="ui blue ribbon label">Medication History</a>
