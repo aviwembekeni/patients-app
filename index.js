@@ -70,6 +70,10 @@ app.use(
 app.use(express.static("public"));
 
 app.get("/", (req, res) => {
+  res.render("index");
+});
+
+app.get("/auth", (req, res) => {
   res.render("landing");
 });
 
