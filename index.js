@@ -230,10 +230,11 @@ app.post("/add-medication", async function(req, res, next) {
     };
 
     let newMedication = await patients.addMedication(medication);
-  console.log(newMedication)
+    req.flash('success','succefully added');
     res.redirect("/patients");
   } catch (err) {
-    next(err);
+    req.flash('error','opps! something is wrong');
+    res.redirect("/patients");
   }
 });
 
@@ -248,9 +249,10 @@ app.post("/add-appointment", async function(req, res, next) {
     };
 
     let newAppointment = await patients.addAppointment(appointment);
-
+    req.flash('success','succefully added');
     res.redirect("/patients");
   } catch (err) {
+    req.flash('error','opps! something is wrong');
     res.redirect("/patients");
   }
 });
