@@ -6,6 +6,7 @@ var flash = require("express-flash");
 var cookieParser = require("cookie-parser");
 var session = require("express-session");
 const Patients = require("./patients");
+const dateFormat = require("dateformat");
 
 const pg = require("pg");
 const Pool = pg.Pool;
@@ -35,14 +36,14 @@ app.engine(
   exphbs({
     defaultLayout: "main",
     helpers: {
-      flashStyle: function() {
-        if (
-          this.messages.info == "Shift(s) successfully added!" ||
-          this.messages.info == "User successfully added!"
-        ) {
-          return "success";
-        } else {
-          return "failure";
+      issue_date: function() {
+        if (this.date_issued) {
+          return dateFormat(this.date_issued, "dddd,  d mmm yyyy");
+        }
+      },
+      appointed_date: function() {
+        if (this.appointment_date) {
+          return dateFormat(this.appointment_date, "dddd,  d mmm yyyy");
         }
       }
     }
