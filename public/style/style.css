@@ -9,6 +9,14 @@
   --light-color: #f4f4f4;
 }
 
+.danger {
+  color: red;
+}
+
+.success {
+  color: green;
+}
+
 body {
   font-family: "PT Sans", sans-serif;
   background-color: #252529;

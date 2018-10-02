@@ -22,7 +22,7 @@ if (process.env.DATABASE_URL) {
 
 const connectionString =
   process.env.DATABASE_URL ||
-  "postgresql://coder:coder123@localhost:5432/patients";
+  "postgresql://postgres:lavish@localhost:5432/patients";
 
 const pool = new Pool({
   connectionString,
@@ -88,9 +88,8 @@ app.post("/login", async function(req, res, next) {
 
     let login = await patients.siginIn(params);
     if (login !== "login") {
-
-      req.flash('userError',login.userName );
-      req.flash('passError',login.password);
+      req.flash("userError", login.userName);
+      req.flash("passError", login.password);
       res.redirect("/auth");
     } else {
       const user = patients.getUser();
@@ -173,15 +172,13 @@ app.post("/register", async function(req, res, next) {
     };
 
     let newUser = await patients.addUser(register);
-     if(newUser){
-       req.flash('errorName',newUser.fullName);
-       req.flash('errorUsername',newUser.userName);
-       req.flash('errorpass1',newUser.password);
-       req.flash('errorPass2',newUser.password2);
+    if (newUser) {
+      req.flash("errorName", newUser.fullName);
+      req.flash("errorUsername", newUser.userName);
+      req.flash("errorpass1", newUser.password);
+      req.flash("errorPass2", newUser.password2);
       res.redirect("/auth");
-     }
-
-  
+    }
   } catch (err) {
     next(err);
   }
@@ -210,10 +207,10 @@ app.post("/add-patient", async function(req, res, next) {
     };
 
     let newPatient = await patients.addPatient(patient);
-     req.flash('success','succefully added');
+    req.flash("success", "Succefully added");
     res.redirect("/patients");
   } catch (err) {
-    req.flash('error','opps! something is wrong');
+    req.flash("error", "OOPPPSS! something is wrong");
     res.redirect("/patients");
   }
 });
@@ -231,7 +228,7 @@ app.post("/add-medication", async function(req, res, next) {
     };
 
     let newMedication = await patients.addMedication(medication);
-  console.log(newMedication)
+    console.log(newMedication);
     res.redirect("/patients");
   } catch (err) {
     next(err);
@@ -281,7 +278,7 @@ app.post("/patient-deceased/:patient_id", async function(req, res, next) {
 
     let markResults = await patients.markPatientAsDeceased(patientid);
     console.log(markResults);
- 
+
     res.redirect("/patients");
   } catch (err) {
     res.redirect("/patients");

@@ -24,19 +24,19 @@
                 <button class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#addAppointment" type="button">Add
                     Appointment</button>
             </form>
-           
+
             <form action="/filter" class="form-inline" method="POST">
                 <input class="form-control mr-sm-2" name="patientName" type="search" placeholder="Search" aria-label="Search">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
             </form>
         </div>
     </nav>
-     {{#if messages.success}}
-              <h5>{{messages.success}}</h5>
-              {{/if}}
-                {{#if messages.error}}
-              <h5>{{messages.error}}</h5>
-              {{/if}}
+    {{#if messages.success}}
+    <h5 class="success" style="color: green; text-align: center;">{{messages.success}}</h5>
+    {{/if}}
+    {{#if messages.error}}
+    <h5 class="danger" style="color: red; text-align: center;">{{messages.error}}</h5>
+    {{/if}}
 
     <div class="accordion ui piled  segments" id="accordionExample">
         {{#each patientsInfo}}
