@@ -43,15 +43,6 @@ module.exports = function(pool) {
     return patients;
   }
 
-  // async function addUser(username = "", fullname = "", usertype = "") {
-  //   if ((username !== "" && fullname !== "") || username !== "") {
-  //     await pool.query(
-  //       "INSERT INTO users (user_name, full_name, user_type) VALUES ( $1, $2, $3)",
-  //       [username, fullname, usertype]
-  //     );
-  //   }
-  //   return true;
-  // }
 
   async function getAppointments() {
     const appointments = await pool.query("SELECT * FROM appointments");
@@ -257,13 +248,15 @@ module.exports = function(pool) {
     return siginIn;
   }
 
-  async function validUser({ userName, password }) {
+  async function validUser({ userName, password }) { 
+    const error =loginErrorMessages({userName,password})
     let found = await pool.query(
       "SELECT hash, usertype, fullname FROM users where username=$1",
       [userName]
     );
     if (found.rowCount == 0) {
-      return "username is not found";
+      error.userName = "Username is not found";
+      return error;
     }
     let hash = found.rows[0].hash;
     let usertype = found.rows[0].usertype;
@@ -271,7 +264,8 @@ module.exports = function(pool) {
     let user = { fullname, usertype };
     localStorage.setItem("user", JSON.stringify(user));
     if (!bcrypt.compareSync(password, hash)) {
-      return "incorrect password";
+      error.password = "Incorrect password";
+      return  error;
     }
     return "login";
   }

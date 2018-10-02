@@ -21,7 +21,7 @@ if (process.env.DATABASE_URL) {
 
 const connectionString =
   process.env.DATABASE_URL ||
-  "postgresql://postgres:lavish@localhost:5432/patients";
+  "postgresql://coder:coder123@localhost:5432/patients";
 
 const pool = new Pool({
   connectionString,
@@ -87,8 +87,10 @@ app.post("/login", async function(req, res, next) {
 
     let login = await patients.siginIn(params);
     if (login !== "login") {
-      console.log(login);
-      res.redirect("/");
+
+      req.flash('userError',login.userName );
+      req.flash('passError',login.password);
+      res.redirect("/auth");
     } else {
       const user = patients.getUser();
       if (user.usertype == "admin" || user.usertype == "doctor") {
@@ -170,9 +172,15 @@ app.post("/register", async function(req, res, next) {
     };
 
     let newUser = await patients.addUser(register);
-    console.log(newUser);
+     if(newUser){
+       req.flash('errorName',newUser.fullName);
+       req.flash('errorUsername',newUser.userName);
+       req.flash('errorpass1',newUser.password);
+       req.flash('errorPass2',newUser.password2);
+      res.redirect("/auth");
+     }
 
-    res.redirect("/");
+  
   } catch (err) {
     next(err);
   }
@@ -201,11 +209,11 @@ app.post("/add-patient", async function(req, res, next) {
     };
 
     let newPatient = await patients.addPatient(patient);
-    console.log(patient);
-
+     req.flash('success','succefully added');
     res.redirect("/patients");
   } catch (err) {
-    next(err);
+    req.flash('error','opps! something is wrong');
+    res.redirect("/patients");
   }
 });
 
@@ -222,7 +230,7 @@ app.post("/add-medication", async function(req, res, next) {
     };
 
     let newMedication = await patients.addMedication(medication);
-
+  console.log(newMedication)
     res.redirect("/patients");
   } catch (err) {
     next(err);
@@ -243,7 +251,7 @@ app.post("/add-appointment", async function(req, res, next) {
 
     res.redirect("/patients");
   } catch (err) {
-    next(err);
+    res.redirect("/patients");
   }
 });
 
@@ -262,7 +270,7 @@ app.post("/transfer-patient/:patient_id", async function(req, res, next) {
 
     res.redirect("/patients");
   } catch (err) {
-    next(err);
+    res.redirect("/patients");
   }
 });
 
@@ -272,10 +280,10 @@ app.post("/patient-deceased/:patient_id", async function(req, res, next) {
 
     let markResults = await patients.markPatientAsDeceased(patientid);
     console.log(markResults);
-
+ 
     res.redirect("/patients");
   } catch (err) {
-    next(err);
+    res.redirect("/patients");
   }
 });
 
@@ -289,7 +297,7 @@ app.post("/add-deceased-report/:deceased_id", async function(req, res, next) {
 
     res.redirect("/deceased");
   } catch (err) {
-    next(err);
+    res.redirect("/deceased");
   }
 });
 

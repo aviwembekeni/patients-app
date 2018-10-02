@@ -16,6 +16,9 @@
                         <input type="text" name="userName" placeholder="Username">
                         <i class="user icon"></i>
                     </div>
+                    {{#if messages.userError}}
+                    <h5>{{messages.userError}}</h5>
+                    {{/if}}
                 </div>
                 <div class="field">
                     <label>Passord</label>
@@ -23,6 +26,9 @@
                         <input type="password" name="password" placeholder="Password">
                         <i class="key icon"></i>
                     </div>
+                     {{#if messages.passError}}
+                    <h5>{{messages.passError}}</h5>
+                    {{/if}}
                 </div>
 
                 <button type="submit" class="fluid ui blue submit button">Login</button>
@@ -41,10 +47,17 @@
                                 <div class="field">
                                     <label>Full Name</label>
                                     <input placeholder="Full Name" name="fullname" type="text">
+                                 {{#if messages.errorName}}
+                                <h5>{{messages.errorName}}</h5>
+                                 {{/if}}
                                 </div>
+                               
                                 <div class="field">
                                     <label>User Name</label>
                                     <input placeholder="User Name" name="username" type="text">
+                                 {{#if messages.errorUsername}}
+                                <h5>{{messages.errorUsername}}</h5>
+                                 {{/if}}
                                 </div>
                             </div>
                             <div class="input-group mb-3">
@@ -60,10 +73,16 @@
                                 <div class="field">
                                     <label>Password</label>
                                     <input placeholder="Password" name="password" type="password">
+                                 {{#if messages.errorpass1}}
+                                <h5>{{messages.errorpass1}}</h5>
+                                 {{/if}}
                                 </div>
                                 <div class="field">
                                     <label>Confirm Passord</label>
                                     <input placeholder="Confirm Password" name="password2" type="password">
+                                  {{#if messages.errorPass2}}
+                                <h5>{{messages.errorPass2}}</h5>
+                                 {{/if}}
                                 </div>
                             </div>
                             <button type="submit" class="fluid ui orange submit button">Register</button>
