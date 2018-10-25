@@ -43,7 +43,6 @@ module.exports = function(pool) {
     return patients;
   }
 
-
   async function getAppointments() {
     const appointments = await pool.query("SELECT * FROM appointments");
 
@@ -84,7 +83,7 @@ module.exports = function(pool) {
         ]
       );
 
-      localStorage.setItem("idno", patient.idno);
+      // localStorage.setItem("idno", patient.idno);
 
       return "success";
     } catch (error) {
@@ -94,11 +93,11 @@ module.exports = function(pool) {
   }
 
   async function addMedication(medication) {
-    let idno = localStorage.getItem("idno");
+    // let idno = localStorage.getItem("idno");
 
     let pattientIdList = await pool.query(
       "select id from patients WHERE id_no = $1",
-      [idno]
+      [medication.idno]
     );
 
     let patientId = pattientIdList.rows[0].id;
@@ -121,11 +120,11 @@ module.exports = function(pool) {
   }
 
   async function addAppointment(appointment) {
-    let idno = localStorage.getItem("idno");
+    //let idno = localStorage.getItem("idno");
 
     let pattientIdList = await pool.query(
       "select id from patients WHERE id_no = $1",
-      [idno]
+      [appointment.idno]
     );
 
     let patientId = pattientIdList.rows[0].id;
@@ -248,8 +247,8 @@ module.exports = function(pool) {
     return siginIn;
   }
 
-  async function validUser({ userName, password }) { 
-    const error =loginErrorMessages({userName,password})
+  async function validUser({ userName, password }) {
+    const error = loginErrorMessages({ userName, password });
     let found = await pool.query(
       "SELECT hash, usertype, fullname FROM users where username=$1",
       [userName]
@@ -265,7 +264,7 @@ module.exports = function(pool) {
     localStorage.setItem("user", JSON.stringify(user));
     if (!bcrypt.compareSync(password, hash)) {
       error.password = "Incorrect password";
-      return  error;
+      return error;
     }
     return "login";
   }

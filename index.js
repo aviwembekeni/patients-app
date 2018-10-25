@@ -217,11 +217,13 @@ app.post("/add-patient", async function(req, res, next) {
 
 app.post("/add-medication", async function(req, res, next) {
   try {
+    let idno = req.body.idno;
     let description = req.body.description;
     let meds = req.body.meds;
     let dateissued = req.body.dateissued;
 
     let medication = {
+      idno,
       description,
       meds,
       dateissued
@@ -240,10 +242,12 @@ app.post("/add-medication", async function(req, res, next) {
 
 app.post("/add-appointment", async function(req, res, next) {
   try {
+    let idno = req.body.idno;
     let description = req.body.description;
     let appointmentdate = req.body.appointmentdate;
 
     let appointment = {
+      idno,
       description,
       appointmentdate
     };
